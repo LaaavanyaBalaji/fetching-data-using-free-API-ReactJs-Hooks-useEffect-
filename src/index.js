@@ -1,36 +1,38 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import { FaBusSimple } from "react-icons/fa6";
-class ReactEventHandling extends Component {
-  constructor() {
-    super();
-    this.state = { content: "Welcome" };
+
+function Userdemo() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then(data => {
+        setUsers(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log("Error message:", error);
+        setLoading(false);
+      });
+  },[]);
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  changethevalue = () => {
-    this.setState({ content: "Love You" });
-  };
-  changethevalue1 = () => {
-    this.setState({ content: "Hate You" });
-  };
-  render() {
-    return (
-      <div>
-        <h1>{this.state.content}</h1>
-        <button type="button"  onDoubleClick={this.changethevalue1} onClick={this.changethevalue}>
-          Login<FaBusSimple />
-        </button>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <h1>This is the list</h1>
+      <ul style={{listStyleType:'number'}}>
+        {users.map(user => (
+          <li key={user.id}>{user.name},{user.email}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
-ReactDOM.render(<ReactEventHandling />, document.getElementById('root'));
-
-// class Reactprops extends Component{
-//   render(){
-//     return <h1>Welcome  {this.props.Name23}</h1>
-//   }
-// }
-//   ReactDom.render(<Reactprops Name23="Lavanya"/>,document.getElementById('root'));
+ReactDOM.render(<Userdemo />, document.getElementById('root'));
 
